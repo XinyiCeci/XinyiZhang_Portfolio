@@ -1,2 +1,2 @@
 # XinyiZhang_Portfolio
-Personal Website for Xinyi Zhang
+This page is for the personal website of Xinyi Zhang.
