@@ -1,4 +1,4 @@
-# conda activate streamlit_env
+#conda activate portfolio_env
 import streamlit as st
 from PIL import Image
 import base64 
@@ -17,14 +17,18 @@ menu = st.sidebar.radio(
 # =====================================================
 if menu == "Home":
     st.title("👋 Hi, I'm Xinyi Zhang")
-    st.subheader("MSc Biostatistics & Data Science | BSc Biological Sciences | Healthcare Data Analytics | Computational Biology")
+    st.subheader(
+        "MSc Biostatistics & Data Science • BSc Biological Sciences\n"
+        "Healthcare Data Analytics | Computational Biology | Clinical Research"
+    )
 
     st.markdown("""
     Welcome to my personal website!  
-    I'm passionate about bridging data science and healthcare — using analytics to improve clinical research, genomics, and healthcare delivery.
+    I’m passionate about applying data science to accelerate discoveries in **clinical research**, **genomics**, and **healthcare delivery**. My work bridges biology, statistics, and computation  
+    to generate insights that support better scientific and clinical decision-making.
     """)
 
-    # ====== Image 2 centered before Education ======
+    # ====== Centered Banner Image ======
     image2 = Image.open("profile2.jpeg")
     st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
     st.image(image2, width=700)
@@ -32,22 +36,23 @@ if menu == "Home":
 
     st.divider()
 
-    # ------------------ EDUCATION ------------------
-    st.header("Education")
+    # =====================================================
+    # ---------------------- EDUCATION --------------------
+    # =====================================================
+    st.header("🎓 Education")
 
-    # create two columns for education section: text (2/3 width) + image (1/3 width)
     col_text, col_img = st.columns([2, 1])
     with col_text:
-        st.write("""
-        **Weill Cornell Medicine**  
-        *Master of Science in Biostatistics and Data Science*  
-        GPA: 4.206 / 4.3  
-        **Courses:** Hierarchical Data Analysis; Big Data in Medicine; Categorical & Censored Data Analysis; Statistical Programming (SAS); Data Science
+        st.markdown("""
+        **Weill Cornell Medicine — Master of Science in Biostatistics & Data Science**  
+        *GPA: 4.206 / 4.3*  
+        Relevant coursework: Hierarchical Data Analysis, Big Data in Medicine,  
+        Categorical & Censored Data Analysis, Statistical Programming (SAS), Data Science  
 
-        **Imperial College London**  
-        *BSc Biological Sciences*  
-        GPA: 3.79 / 4.0  
-        **Courses:** Computational Omics; Stem Cell, Ageing, and Regeneration; Genetics
+        **Imperial College London — BSc Biological Sciences**  
+        *GPA: 3.79 / 4.0*  
+        Relevant coursework: Computational Omics, Regenerative Biology,  
+        Cellular & Molecular Neuroscience, Genetics, Cell Biology  
         """)
     with col_img:
         image3 = Image.open("profile3.jpg")
@@ -55,58 +60,71 @@ if menu == "Home":
 
     st.divider()
 
-    # ------------------ SKILLS ------------------
-    st.header("Technical Skills")
+    # =====================================================
+    # ------------------ TECHNICAL SKILLS -----------------
+    # =====================================================
+    st.header("🧠 Technical Skills")
 
     col1, col2, col3 = st.columns(3)
+
     with col1:
         st.markdown("""
-        - **Programming:** Python, R, MySQL, SAS  
-        - **Softwares or Tools:** SPSS, Prism, Tableau, Shiny  
-        - **Packages:** Pandas, Numpy, scikit-learn, TensorFlow, tidyverse, ggplot2, matplotlib, seaborn, Bioconductor  
+        **Programming:** Python, R, MySQL, SAS  
+        **Software/Tools:** Shiny, Tableau, SPSS, Prism  
+        **Libraries:** Pandas, NumPy, scikit-learn, TensorFlow  
         """)
+
     with col2:
         st.markdown("""
-        - **Statistical Methods:** Regression, Survival, Longitudinal, Categorical Data  
-        - **Applications:** Clinical trials, Transcriptomics, Genomics pipelines  
-        - **Tools:** Git, Conda, HPC clusters, Linux  
+        **Statistics:** Regression, Survival Analysis,  
+        Longitudinal Models, Categorical Data  
+        **Applications:** Clinical Trials, Transcriptomics,  
+        Genomics Pipeline Development  
+        **Computing:** Git, Conda, HPC, Linux  
         """)
+
     with col3:
         st.markdown("""
-        - **Programming Certifications:** SAS Certified Professional (Base) & SAS Certified Specialist (Advanced)  
-        - **Clinical Trials related:** Good Clinical Practice  
+        **Certifications:**  
+        - SAS Certified Professional (Base)  
+        - SAS Certified Specialist (Advanced)  
+
+        **Clinical Research:**  
+        - Good Clinical Practice (GCP) certified  
         """)
 
     st.divider()
 
-    # ------------------ INTERESTS ------------------
-    st.header("Interests")
+    # =====================================================
+    # ---------------------- INTERESTS --------------------
+    # =====================================================
+    st.header("🌱 Interests")
 
-    # create two columns again: image on right, text on left
     col_text, col_img = st.columns([2, 1])
     with col_text:
         st.markdown("""
-        Professionally, I’m interested in:
-        - Integrating **data science and biology** to improve clinical decision-making in clinical trials and observational studies.  
-        - Building **visual, interactive tools** for scientists and clinicians.  
-        - Using **machine learning** to uncover patterns in genomics and patient data.
-        """)
-        st.markdown("""
-        In my spare time, I’m interested in:
-        - **French musicals.** I adore Le Rouge et Le Noir!
-        - **Cooking**, yummm... I can cook nearly all kinds of dishes around the world!
-        - **Learning languages**, on day 500+ on Duolingo for Japanese course currently. Do your lesson!
-        - **Observe the geese.* I used to live by a river back in London and I just love to observe them!
-        - **Travelling.** This is a picture of me in front of Sagrada Familia! 👉
-        """)
-        st.markdown("""
-        Fun fact about me: I have a wide range of collection of everything about penguin!
+        **Professional Interests**
+        - Using **machine learning** to uncover biological and clinical patterns  
+        - Building **interactive analytics tools** for scientists and clinicians  
+        - Integrating **data science + biology** to support clinical decision-making  
+
+        **Personal Interests**
+        - **French musicals** — especially *Le Rouge et Le Noir*  
+        - **Cooking** dishes from cultures around the world  
+        - **Learning languages** — on day 500+ on Duolingo for Japanese course currently. Do your lesson!
+        - **Observe the geese.* - I used to live by a river back in London and I just love to observe them!
+        - **Traveling** — the photo on the right is from Sagrada Família 🇪🇸  
+
+        **Fun fact:**  
+        I collect penguin-themed items — everything from plushies to art prints!
         """)
     with col_img:
         image1 = Image.open("profile.jpg")
         st.image(image1, width=400)
+
         image4 = Image.open("penguin.jpg")
-        st.image(image4, width=400, caption = "A portion of my penguin collections")
+        st.image(image4, width=400, caption="A small part of my penguin collection 🐧")
+
 
 
 # =====================================================
