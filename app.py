@@ -2,6 +2,7 @@
 import streamlit as st
 from PIL import Image
 import base64 
+import urllib.parse
 
 # ------------------ CONFIG ------------------
 st.set_page_config(page_title="Xinyi Zhang | Portfolio", page_icon="📊", layout="wide")
@@ -130,40 +131,94 @@ if menu == "Home":
 # =====================================================
 # ------------------ PROJECTS PAGE --------------------
 # =====================================================
+
 elif menu == "Projects":
     st.title("💡 Featured Projects")
 
-    sub_menu = st.radio(
-        "Select a category:",
-        ["Biostatistics Projects", "Computational Biology Projects", "Machine Learning Projects", "Biology Projects", "Other Projects"]
-    )
+    import base64, urllib.parse
 
     # =====================================================
-    # --- BIOSTATISTICS PROJECTS ---
+    # ---- UNIVERSAL PDF VIEWER (WORKS FOR ALL PDFs) ------
     # =====================================================
+    def show_pdf(title, file_path, description=None):
+        """Display a PDF in Streamlit with fallback viewer + download"""
+        st.subheader(title)
+
+        if description:
+            st.markdown(description)
+
+        try:
+            # read file
+            with open(file_path, "rb") as f:
+                pdf_bytes = f.read()
+
+            # encode
+            pdf_base64 = base64.b64encode(pdf_bytes).decode("utf-8")
+
+            # inline iframe
+            iframe_html = f"""
+            <iframe
+                src="data:application/pdf;base64,{pdf_base64}"
+                width="100%"
+                height="600px"
+                style="border:none;"
+            ></iframe>
+            """
+            st.markdown(iframe_html, unsafe_allow_html=True)
+
+            # google docs fallback (for Chrome)
+            safe_url = urllib.parse.quote(file_path)
+            gdocs_url = f"https://drive.google.com/drive/u/0/folders/1b2uT765Cj6VgPclMmE0tmrXFSkkAHoGM"
+
+            st.markdown(
+                f"""
+                <div style='margin-top:10px;'>
+                If the preview does not load,
+                👉 <a href="{gdocs_url}" target="_blank"><b>Open in my Google Drive</b></a>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            # download button
+            st.download_button(
+                f"📄 Download {title}",
+                pdf_bytes,
+                file_name=file_path.split("/")[-1],
+                mime="application/pdf"
+            )
+
+        except FileNotFoundError:
+            st.error(f"⚠️ File not found: {file_path}")
+        except Exception as e:
+            st.error(f"⚠️ Error displaying file: {e}")
+
+
+    # =====================================================
+    # ---- USER SELECTS CATEGORY ---------------------------
+    # =====================================================
+
+    sub_menu = st.radio(
+        "Select a category:",
+        [
+            "Biostatistics Projects",
+            "Computational Biology Projects",
+            "Machine Learning Projects",
+            "Biology Projects",
+            "Other Projects"
+        ]
+    )
+
+
+    # =====================================================
+    # ------------- BIOSTATISTICS PROJECTS ----------------
+    # =====================================================
+
     if sub_menu == "Biostatistics Projects":
         st.header("Biostatistics Projects")
 
-        # --- helper function ---
-        def show_file(title, file_path, description, file_type="pdf"):
-            st.subheader(title)
-            st.markdown(description)
-            try:
-                with open(file_path, "rb") as f:
-                    if file_type == "pdf":
-                        base64_data = base64.b64encode(f.read()).decode("utf-8")
-                        display = f'<iframe src="data:application/pdf;base64,{base64_data}" width="800" height="500" type="application/pdf"></iframe>'
-                        st.markdown(display, unsafe_allow_html=True)
-                    elif file_type == "pptx":
-                        st.info("This project is a PowerPoint presentation. Click below to download or view it locally.")
-                    # Download button
-                    with open(file_path, "rb") as f2:
-                        st.download_button(f"📄 Download {title}", f2, file_name=file_path.split("/")[-1])
-            except FileNotFoundError:
-                st.warning(f"⚠️ File not found: {file_path}")
-
         # ---- 1. Natera Internship ----
-        show_file(
+        show_pdf(
             "Natera Internship - ShinyApp",
             "projects/Natera_Internship.pptx",
             """
@@ -175,17 +230,16 @@ elif menu == "Projects":
             
             But the most impactful project I've done is this ShinyApp project which help the team to build a tool to visualize the longitudinal patient data from a RCT interactively, allowing 
             users to explore detailed data behind one single event within just one single click. 
-            """,
-            file_type="pptx"
+            """
         )
 
         st.divider()
 
 
         # ---- 2. Methylmalonic Acid and Lung Cancer ----
-        show_file(
+        show_pdf(
             "Association Between Methylmalonic Acid (MMA) and Lung Cancer",
-            "projects/MMA and lung cancer.pdf",
+            "projects/MMA_lung_cancer.pdf",
             """
             Analyzed **NHANES 2001–2014** data to investigate the relationship between serum **Methylmalonic Acid (MMA)** levels
             and lung cancer history. Used multivariable **linear regression** and **Box–Cox transformations** to test interactions
@@ -198,9 +252,9 @@ elif menu == "Projects":
         st.divider()
 
         # ---- 3. FDA NSCLC Safety Analysis ----
-        show_file(
+        show_pdf(
             "FDA FAERS Q4 2024 NSCLC Outcome Analysis - SAS Project",
-            "projects/FDA 2024 Q4 AE Event in NSCLC Outcome Analysis.pdf",
+            "projects/FDA_2024_Q4_AE_Event_NSCLC.pdf",
             """
             Conducted a **real-world safety and survival study** using the FDA Adverse Event Reporting System (FAERS) to evaluate platinum-based chemotherapies in **Non-Small Cell Lung Cancer** (Carboplatin vs. Cisplatin).  
             Applied **Kaplan–Meier survival analysis** in SAS 9.4 to model time-to-event data for death, hospitalization,  
@@ -213,9 +267,9 @@ elif menu == "Projects":
         st.divider()
 
         # ---- 4. SAS TFL Final-term Project ----
-        show_file(
+        show_pdf(
             "Placebo and Treatment Comparison - SAS Project",
-            "projects/Placebo_Treatment SAS project.pdf",
+            "projects/Placebo_Treatment_SAS.pdf",
             """
             Designed a **Table–Figure–Listing (TFL)** report in **SAS 9.4** to summarize a clinical dataset comparing Placebo and Drug B treatment groups. Performed descriptive statistics and inferential tests:
             - Student’s *t*-test for BMI  
@@ -233,18 +287,18 @@ elif menu == "Projects":
         st.header("Computational Biology Projects")
 
         # --- helper function ---
-        def show_pdf(title, file_path, description):
-            st.subheader(title)
-            st.markdown(description)
-            try:
-                with open(file_path, "rb") as f:
-                    base64_pdf = base64.b64encode(f.read()).decode("utf-8")
-                pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="800" height="500" type="application/pdf"></iframe>'
-                st.markdown(pdf_display, unsafe_allow_html=True)
-                with open(file_path, "rb") as f:
-                    st.download_button(f"📄 Download {title}", f, file_name=file_path.split("/")[-1])
-            except FileNotFoundError:
-                st.warning(f"⚠️ File not found: {file_path}")
+      #  def show_pdf(title, file_path, description):
+      #      st.subheader(title)
+      #      st.markdown(description)
+      #      try:
+      #          with open(file_path, "rb") as f:
+      #              base64_pdf = base64.b64encode(f.read()).decode("utf-8")
+      #          pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="800" height="500" type="application/pdf"></iframe>'
+      #          st.markdown(pdf_display, unsafe_allow_html=True)
+      #          with open(file_path, "rb") as f:
+      #              st.download_button(f"📄 Download {title}", f, file_name=file_path.split("/")[-1])
+      #      except FileNotFoundError:
+      #          st.warning(f"⚠️ File not found: {file_path}")
 
         # ---- 1. Tilgner Lab ----
         show_pdf(
@@ -263,7 +317,7 @@ elif menu == "Projects":
         # ---- 2. 16S rRNA Sequencing ----
         show_pdf(
             "16S rRNA Sequencing Project",
-            "projects/16s rRNA sequencing_Xinyi Zhang.pdf",
+            "projects/16s_rRNA_sequencing.pdf",
             """
             Conducted **microbiome profiling using 16S rRNA sequencing**, analyzing operational taxonomic units (OTUs)
             to identify microbial diversity and abundance across different samples.  
@@ -277,7 +331,7 @@ elif menu == "Projects":
         # ---- 4. RNA-Seq Analysis ----
         show_pdf(
             "RNA-Seq Data Analysis",
-            "projects/RNA Seq analysis.pdf",
+            "projects/RNA_Seq_analysis.pdf",
             """
             Designed and executed a complete **RNA-Seq pipeline**: normalization, DEG identification, PCA, and pathway analysis.  
             Identified upregulation of **Pdcd-1** in thymus datasets, suggesting a potential role in T-cell negative selection
@@ -290,7 +344,7 @@ elif menu == "Projects":
         # ---- 5. Variant Calling ----
         show_pdf(
             "TP53 Variant Calling and Protein Structure Prediction",
-            "projects/Variant calling_Xinyi Zhang.pdf",
+            "projects/Variant_calling.pdf",
             """
             Performed **variant calling on chromosome 17 (TP53 gene)** using GATK, SAMtools, and BCFtools pipelines.  
             Identified pathogenic SNPs (e.g., rs587782596 and rs786201057) associated with **Li-Fraumeni syndrome** and cancers.  
@@ -306,18 +360,18 @@ elif menu == "Projects":
         st.header("Machine Learning Projects")
 
     # helper function reused
-        def show_pdf(title, file_path, description):
-            st.subheader(title)
-            st.markdown(description)
-            try:
-                with open(file_path, "rb") as f:
-                    base64_pdf = base64.b64encode(f.read()).decode("utf-8")
-                pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="800" height="500" type="application/pdf"></iframe>'
-                st.markdown(pdf_display, unsafe_allow_html=True)
-                with open(file_path, "rb") as f:
-                    st.download_button(f"📄 Download {title}", f, file_name=file_path.split("/")[-1])
-            except FileNotFoundError:
-                st.warning(f"⚠️ File not found: {file_path}")
+     #   def show_pdf(title, file_path, description):
+     #       st.subheader(title)
+     #       st.markdown(description)
+     #       try:
+     #           with open(file_path, "rb") as f:
+     #               base64_pdf = base64.b64encode(f.read()).decode("utf-8")
+     #           pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="800" height="500" type="application/pdf"></iframe>'
+     #           st.markdown(pdf_display, unsafe_allow_html=True)
+     #           with open(file_path, "rb") as f:
+     #               st.download_button(f"📄 Download {title}", f, file_name=file_path.split("/")[-1])
+     #       except FileNotFoundError:
+     #           st.warning(f"⚠️ File not found: {file_path}")
 
     # -----------------------------
     # 1. Customer Feedback Sentiment Analysis
@@ -339,7 +393,7 @@ elif menu == "Projects":
     # -----------------------------
         show_pdf(
             "TensorFlow2 CNN & MLP Image Classifier (SVHN Dataset)",
-            "projects/Python Tensorflow2 Capstone.pdf",
+            "projects/Tensorflow2_Capstone.pdf",
             """
             Developed both **MLP and CNN architectures** to classify real-world street digit images from the **SVHN dataset**.  
             Implemented preprocessing, grayscale conversion, model callbacks, early stopping, and achieved >80% validation accuracy with a compact CNN design.
@@ -370,30 +424,30 @@ elif menu == "Projects":
         st.header("Biology Projects")
 
         # --- helper function ---
-        def show_file(title, file_path, description, file_type="pdf"):
-            st.subheader(title)
-            st.markdown(description)
-            try:
-                with open(file_path, "rb") as f:
-                    if file_type == "pdf":
-                        base64_data = base64.b64encode(f.read()).decode("utf-8")
-                        display = f'<iframe src="data:application/pdf;base64,{base64_data}" width="800" height="500" type="application/pdf"></iframe>'
-                        st.markdown(display, unsafe_allow_html=True)
-                    elif file_type == "pptx":
-                        st.info("This project is a PowerPoint presentation. Click below to download or view it locally.")
-                    # Download button
-                    with open(file_path, "rb") as f2:
-                        st.download_button(f"📄 Download {title}", f2, file_name=file_path.split("/")[-1])
-            except FileNotFoundError:
-                st.warning(f"⚠️ File not found: {file_path}")
+     #   def show_file(title, file_path, description, file_type="pdf"):
+     #       st.subheader(title)
+     #       st.markdown(description)
+     #       try:
+     #           with open(file_path, "rb") as f:
+     #               if file_type == "pdf":
+     #                   base64_data = base64.b64encode(f.read()).decode("utf-8")
+     #                   display = f'<iframe src="data:application/pdf;base64,{base64_data}" width="800" height="500" type="application/pdf"></iframe>'
+     #                   st.markdown(display, unsafe_allow_html=True)
+     #               elif file_type == "pptx":
+     #                   st.info("This project is a PowerPoint presentation. Click below to download or view it locally.")
+     #               # Download button
+     #               with open(file_path, "rb") as f2:
+     #                   st.download_button(f"📄 Download {title}", f2, file_name=file_path.split("/")[-1])
+     #       except FileNotFoundError:
+     #           st.warning(f"⚠️ File not found: {file_path}")
 
 
     # =====================================================
     # --- 1. FINAL YEAR DISSERTATION ----------------------
     # =====================================================
-        show_file(
+        show_pdf(
             "Undergraduate Final Year Dissertation",
-            "projects/390.pdf",
+            "projects/Final_Year_Project_Report.pdf",
             """
             **Investigating the Impact of CHD3 Deficiency on the Pluripotency of Induced Pluripotent Stem Cells (iPSCs)**  
             A full experimental research project exploring how CHD3 knockout influences pluripotency at the RNA and protein levels.  
@@ -407,9 +461,9 @@ elif menu == "Projects":
     # =====================================================
     # --- 2. Influenza Pandemic Essay ---------------------
     # =====================================================
-        show_file(
+        show_pdf(
             "Will Influenza Become the Next Pandemic?",
-            "projects/Will Influenza become the next pandemic and are we ready for it.pdf",
+            "projects/Influenza.pdf",
             """
             A scientific essay analyzing whether Influenza, particularly emerging H5N1 strains, could drive the next global pandemic.  
             Discusses **viral evolution**, **gene reassortment**, **global surveillance gaps**, and pandemic preparedness challenges.  
@@ -442,7 +496,7 @@ elif menu == "Projects":
         # ---- 1. Health Equity Hackathon (MSD & Eli Lilly) ----
         show_pdf(
             "Health Equity Hackathon (MSD & Eli Lilly)",
-            "projects/Health equity hackathon poster.pdf",
+            "projects/Health_equity_hackathon_poster.pdf",
             """
             Led a team to improve Afro-Caribbean women’s participation in breast cancer trials.  
             Proposed an educational workshop series with occasional holiday themes to improve inclusiviness in the community strategies.
